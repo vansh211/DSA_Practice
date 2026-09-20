@@ -1,73 +1,63 @@
 class Solution {
     public int shortestPathBinaryMatrix(int[][] grid) {
+
         int n = grid.length;
-        if ((grid[0][0] == 1) || (grid[n - 1][n - 1] == 1))
+
+        if (grid[0][0] == 1 || grid[n - 1][n - 1] == 1) {
             return -1;
+        }
 
-        int path = 1;
-        boolean vis[][] = new boolean[n][n];
-        Queue<int[]> qu = new LinkedList<>();
-        qu.offer(new int[] { 0, 0 });
-        vis[0][0]=true;
-        while (!qu.isEmpty()) {
-            int size = qu.size();
-            for (int i = 0; i < size; i++) {
-                int[] arr = qu.poll();
-                int r = arr[0];
-                int c = arr[1];
-                if (r == n - 1 && c == n - 1)
-                    return path;
-                
-                if (r - 1 >= 0 && grid[r - 1][c] != 1 && vis[r - 1][c] != true) {
-                    vis[r-1][c] = true;
-                    qu.offer(new int[] { r - 1, c });
-                }
+        // row, col, path-length
+        Queue<int[]> q = new LinkedList<>();
 
-                if (c - 1 >= 0 && grid[r][c - 1] != 1 && vis[r][c - 1] != true) {
-                    
-                    vis[r][c-1] = true;
-                    qu.offer(new int[] { r, c - 1 });
-                    
-                }
+        q.add(new int[]{0, 0, 1});
 
-                if (r - 1 >= 0 && c - 1 >= 0 && grid[r - 1][c - 1] != 1 && vis[r - 1][c - 1] != true) {
-                    vis[r-1][c-1] = true;
-                    qu.offer(new int[] { r - 1, c - 1 });
+        // Mark as visited
+        grid[0][0] = 1;
 
-                }
+        int[][] directions = {
+            {-1, -1},
+            {0, -1},
+            {1, -1},
+            {1, 0},
+            {-1, 0},
+            {-1, 1},
+            {0, 1},
+            {1, 1}
+        };
 
-                if (r - 1 >= 0 && c + 1 < n && grid[r - 1][c + 1] != 1 && vis[r - 1][c + 1] != true) {
-                    vis[r-1][c+1] = true;
-                    qu.offer(new int[] { r - 1, c + 1 });
+        while (!q.isEmpty()) {
 
-                }
+            int[] current = q.poll();
 
-                if (r + 1 < n && grid[r + 1][c] != 1 && vis[r + 1][c] != true) {
-                    vis[r+1][c] = true;
-                    qu.offer(new int[] { r + 1, c });
+            int row = current[0];
+            int col = current[1];
+            int pathLength = current[2];
 
-                }
+            if (row == n - 1 && col == n - 1) {
+                return pathLength;
+            }
 
-                if (r + 1 < n && c - 1 >= 0 && grid[r + 1][c - 1] != 1 && vis[r + 1][c - 1] != true) {
-                    vis[r+1][c-1] = true;
-                    qu.offer(new int[] { r + 1, c - 1 });
+            for (int i = 0; i < 8; i++) {
 
-                }
+                int x = row + directions[i][0];
+                int y = col + directions[i][1];
 
-                if (r + 1 < n && c + 1 < n && grid[r + 1][c + 1] != 1 && vis[r + 1][c + 1] != true) {
-                    vis[r+1][c+1] = true;
-                    qu.offer(new int[] { r + 1, c + 1 });
+                if (x >= 0 && x < n &&
+                    y >= 0 && y < n &&
+                    grid[x][y] == 0) {
 
-                }
+                    grid[x][y] = 1;
 
-                if (c + 1 < n && grid[r][c + 1] != 1 && vis[r][c + 1] != true) {
-                    vis[r][c+1] = true;
-                    qu.offer(new int[] { r, c + 1 });
-
+                    q.add(new int[]{
+                        x,
+                        y,
+                        pathLength + 1
+                    });
                 }
             }
-            path++;
         }
-        return qu.isEmpty()!=false?-1:path;
+
+        return -1;
     }
 }
