@@ -1,16 +1,17 @@
 class Solution {
     public int scoreOfParentheses(String s) {
-        Stack<Integer> st = new Stack<>();
-        int res = 0;
-        for(char ch : s.toCharArray()) {
-            if(ch == '(') {
-                st.push(res);
-                res = 0;
-            }
-            else {
-                res = st.pop() + Math.max(res*2, 1);
+        int count = 0;
+        int score = 0;
+        for(int i =0;i<s.length();i++){
+            if(s.charAt(i)=='('){
+                count++;
+            }else{
+                count--;
+                if(s.charAt(i-1)=='('){
+                    score += (int) Math.pow(2, count);
+                }
             }
         }
-        return res;
+        return score;
     }
 }
